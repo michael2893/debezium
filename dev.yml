@@ -1,0 +1,13 @@
+---
+name: debezium
+up:
+  - homebrew:
+      - maven
+  - maven:
+      - jars
+  - jdk:
+      version: "17"
+      distribution: zulu
+
+build: "mvn clean install -Passembly -DskipITs -DskipTests"
+test: "mvn clean install -Passembly"
