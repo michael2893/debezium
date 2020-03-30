@@ -1,0 +1,13 @@
+---
+name: debezium
+up:
+  - custom:
+      name: install openjdk java11
+      met?: brew cask list | grep '^adoptopenjdk11$' >/dev/null 2>&1
+      meet: brew cask install adoptopenjdk/openjdk/adoptopenjdk11
+  - homebrew:
+    - maven
+  - java: "11"
+
+build: "mvn clean install -Passembly -DskipITs -DskipTests"
+test: "mvn clean install -Passembly"

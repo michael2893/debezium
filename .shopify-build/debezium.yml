@@ -1,0 +1,17 @@
+---
+containers:
+  default:
+    environment: production
+    build:
+      timeout: 15m
+
+env:
+  PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
+  PIPA_USE_BUILDPACK_CACHE: "true"
+  PIPA_TAG_BRANCH: "true"
+
+steps:
+  - label: Test Connector
+    run:
+    - cd src && ../script/test_connector_mysql
+    timeout: 20m
