@@ -33,8 +33,12 @@ is_git_clean() {
 sync_upstream() {
   git checkout pristine-master
   git pull upstream master
+  git push origin pristine-master
+
   git checkout master
-  git rebase upstream master
+  git pull origin master
+  git pull upstream master
+  git push origin +master
 }
 
 is_tag_unique() {
@@ -73,7 +77,6 @@ main() {
   if ! is_git_clean; then error "You need to commit or stash your changes to release"; fi
 
   sync_upstream
-
 
   local version="${1}"
   local short_version=$(parse_version "${1}")
