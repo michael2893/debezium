@@ -37,8 +37,8 @@ sync_upstream() {
 
   git checkout master
   git pull origin master
-  git pull upstream master
-  git push origin +master
+  git rebase upstream/master
+  git push --force-with-lease origin master
 }
 
 is_tag_unique() {
@@ -67,7 +67,7 @@ commit_version() {
 }
 
 main() {
-  # make sure upstream tags are refreshed 
+  # make sure upstream tags are refreshed
   git fetch --all --tags
 
   # can only release from the master branch with a clean git index (nothing outstanding)
