@@ -3,7 +3,12 @@ set -eu
 
 ca_pem_file="/kafka/ca.pem"
 
-openssl s_client -showcerts -connect kafka-cdc-0.kafka-cdc-change-data-capture-us-east1-1.shopifycloud.com:9093 \
+IFS=','
+read -ra SERVERS <<< "${BOOTSTRAP_SERVERS}"
+
+echo "Generating certs from ${SERVERS[0]}"
+
+openssl s_client -showcerts -connect ${SERVERS[0]} \
     2>/dev/null | sed -n -e '/BEGIN\ CERTIFICATE/,/END\ CERTIFICATE/ p' > ${ca_pem_file}
 
 openssl pkcs12 -export -password pass:${CONNECT_SSL_KEYSTORE_PASSWORD} -out ${KEYSTORE_LOCATION} \
