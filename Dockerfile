@@ -11,12 +11,12 @@ COPY . /app/src/
 ENV DEBEZIUM_VERSION "1.2.0-SNAPSHOT"
 RUN /app/script/build_connector_mysql
 
-ENV CDC_LARGE_RECORD_VERSION=26 \
+ENV CDC_LARGE_RECORD_VERSION=27 \
     CDC_REWRITE_NAMESPACE_VERSION=20
 
 ARG JARS_PACKAGE_CLOUD_TOKEN
 
-RUN /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 175ace7c5af37a86a8adada1b06d3534 && \
+RUN /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" e3f421e4c05f594e33cd0ed0104b0950 && \
     /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" 4aa1b76099c2e4138afea4e4f63dde37
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]
