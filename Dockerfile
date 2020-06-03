@@ -16,7 +16,7 @@ ENV CDC_LARGE_RECORD_VERSION=26 \
 
 ARG JARS_PACKAGE_CLOUD_TOKEN
 
-RUN /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" db89a42273e0c0090bb6ec82053c6538 && \
+RUN /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 175ace7c5af37a86a8adada1b06d3534 && \
     /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" 4aa1b76099c2e4138afea4e4f63dde37
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]
