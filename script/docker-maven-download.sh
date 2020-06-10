@@ -58,7 +58,12 @@ maven_debezium_incubator_plugin() {
 }
 
 maven_cdc_jar() {
-    maven_dep $MAVEN_REPO_PACKAGE_CLOUD $1 $2 $3 "$2-$3$4.jar" $5
+    maven_dep $MAVEN_REPO_PACKAGE_CLOUD $1 $2 $3 "$2-$3.jar" $4
+    mv "$DOWNLOAD_FILE" $MAVEN_DEP_DESTINATION
+}
+
+maven_shaded_cdc_jar() {
+    maven_dep $MAVEN_REPO_PACKAGE_CLOUD $1 $2 $3 "$2-$3-shaded.jar" $4
     mv "$DOWNLOAD_FILE" $MAVEN_DEP_DESTINATION
 }
 
@@ -77,5 +82,8 @@ case $1 in
             ;;
     "cdc-jar" ) shift
             maven_cdc_jar ${@}
+            ;;
+    "shaded-cdc-jar" ) shift
+            maven_shaded_cdc_jar ${@}
             ;;
 esac
