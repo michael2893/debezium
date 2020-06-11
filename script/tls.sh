@@ -29,4 +29,4 @@ keytool -noprompt -keystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} -alias CARoot -im
 # that makes third party API clients such as Google Storage in a Kafka Connect runtime not trust remote certs
 # JDK defaults imported to our custom store means no cat and mouse to keep up with the JDK
 keytool -importkeystore -noprompt -srckeystore ${JAVA_HOME}/lib/security/cacerts -srcstorepass ${CONNECT_SSL_KEYSTORE_PASSWORD} \
-    -destkeystore ${CONNECT_SSL_KEYSTORE_LOCATION} -deststorepass ${CONNECT_SSL_KEYSTORE_PASSWORD}
+    -destkeystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} -deststorepass ${CONNECT_SSL_KEYSTORE_PASSWORD}
