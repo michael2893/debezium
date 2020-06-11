@@ -24,3 +24,9 @@ keytool -importkeystore -noprompt -srckeystore ${KEYSTORE_LOCATION} -destkeystor
 
 keytool -noprompt -keystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} -alias CARoot -import \
     -file ${ca_pem_file} -storepass ${CONNECT_SSL_TRUSTSTORE_PASSWORD}
+
+# Import JDK default truststore as well since we override it at runtime with -Djavax.net.ssl.trustStore and
+# that makes third party API clients such as Google Storage in a Kafka Connect runtime not trust remote certs
+# JDK defaults imported to our custom store means no cat and mouse to keep up with the JDK
+keytool -importkeystore -noprompt -srckeystore ${JAVA_HOME}/lib/security/cacerts -srcstorepass ${CONNECT_SSL_KEYSTORE_PASSWORD} \
+    -destkeystore ${CONNECT_SSL_KEYSTORE_LOCATION} -deststorepass ${CONNECT_SSL_KEYSTORE_PASSWORD}
