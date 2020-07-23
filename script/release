@@ -42,7 +42,7 @@ sync_upstream() {
 }
 
 is_tag_unique() {
-  [ -z "$(git ls-remote -t -q | grep "${1}")" ]
+  [ -z "$(git ls-remote -t -q https://github.com/debezium/debezium | grep "${1}")" ]
 }
 
 parse_version() {
