@@ -1,4 +1,4 @@
-FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.4.0
+FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.5.1
 
 USER root
 COPY script/ /app/script/
