@@ -1,0 +1,49 @@
+#!/bin/bash
+set -euo pipefail
+
+########################################################################################################################
+# Usage: script/sync_upstream
+# Example: script/sync_upstream
+#
+# This script sync's the pristine-master branch with Debezium/Debezium master, and rebases the Shopify/Debezium master
+# branch on pristine-master.
+#
+########################################################################################################################
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+error() {
+  echo -e "💩! ${1}\n" 1>&2 && exit 1
+}
+
+is_on_master() {
+  [ "${BRANCH}" == "master" ]
+}
+
+is_git_clean() {
+  # untracked files are cool, but nothing in the index waiting to be committed or changed is allowed
+  git diff --exit-code && git diff --quiet --cached HEAD
+}
+
+sync_upstream() {
+  git checkout pristine-master
+  git pull upstream master
+  git push origin pristine-master
+
+  git checkout master
+  git pull origin master
+  git rebase upstream/master
+  git push --force-with-lease origin master
+}
+
+main() {
+  # can only sync from the master branch with a clean git index (nothing outstanding)
+  if ! is_on_master;
+    then error "Releases must be started from master.";
+  fi
+  if ! is_git_clean; then error "You need to commit or stash your changes to release"; fi
+
+  sync_upstream
+}
+
+main "$@"
