@@ -11,13 +11,13 @@ COPY . /app/src/
 ENV DEBEZIUM_VERSION "1.4.0-SNAPSHOT"
 RUN /app/script/build_connector_mysql
 
-ENV CDC_LARGE_RECORD_VERSION=66 \
+ENV CDC_LARGE_RECORD_VERSION=72 \
     CDC_REWRITE_NAMESPACE_VERSION=20 \
     CDC_QUERY_MINIFIER_VERSION=68
 
 ARG JARS_PACKAGE_CLOUD_TOKEN
 
-RUN /app/script/docker-maven-download.sh shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 38774043fbb363b106cf1d2dbf6011c3 && \
+RUN /app/script/docker-maven-download.sh shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 9050f17deddbe91af1440a6f92bb6090 && \
     /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" 4aa1b76099c2e4138afea4e4f63dde37 && \
     /app/script/docker-maven-download.sh cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" acac715fc2b1a7dcdb6f1dad097ad425
 
