@@ -1,4 +1,4 @@
-FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.5.1
+FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.6.0
 
 USER root
 COPY script/ /app/script/
@@ -11,14 +11,14 @@ COPY . /app/src/
 ENV DEBEZIUM_VERSION "1.4.0-SNAPSHOT"
 RUN /app/script/build_connector_mysql
 
-ENV CDC_LARGE_RECORD_VERSION=79 \
-    CDC_REWRITE_NAMESPACE_VERSION=70 \
-    CDC_QUERY_MINIFIER_VERSION=73
+ENV CDC_LARGE_RECORD_VERSION=84 \
+    CDC_REWRITE_NAMESPACE_VERSION=84 \
+    CDC_QUERY_MINIFIER_VERSION=84
 
 ARG JARS_PACKAGE_CLOUD_TOKEN
 
-RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 1d2b11a06c39d3873f8e505045db2953 && \
-    docker-maven-download cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" 951db6c80826861e1b129c266d05ccc5 && \
-    docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" 386ff485c43a94836a7b7c256be98808
+RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 45e5f1e08f934f9593236e0c4418d872 && \
+    docker-maven-download cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" b562243b9f11a1b241dfa417c282d706 && \
+    docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" 3ebb097db55a24b4be8520f925cb8d18
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]

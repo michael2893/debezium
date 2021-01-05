@@ -2,10 +2,10 @@
 containers:
   latest:
     environment: production
-  1.3.0:
-    environment: 1.3.0
+  1.3.1:
+    environment: 1.3.1
     build:
-      command: pipa build -- ./script/build v1.3.0.Final
+      command: pipa build -- ./script/build v1.3.1.Final
       env:
         PIPA_GIT_CLONE_FLAGS: " "
   1.2.3:
@@ -17,7 +17,7 @@ containers:
 
 
 steps:
-  - build: 1.3.0
+  - build: 1.3.1
   - build: 1.2.3
   - build: latest
   - wait
