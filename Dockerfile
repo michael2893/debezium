@@ -8,7 +8,7 @@ RUN /app/script/install_maven
 WORKDIR /app/src
 COPY . /app/src/
 
-ENV DEBEZIUM_VERSION "1.4.0-SNAPSHOT"
+ENV DEBEZIUM_VERSION "1.5.0-SNAPSHOT"
 RUN /app/script/build_connector_mysql
 
 ENV CDC_LARGE_RECORD_VERSION=84 \
