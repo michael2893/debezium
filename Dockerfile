@@ -16,6 +16,7 @@ ENV CDC_LARGE_RECORD_VERSION=95 \
     CDC_REWRITE_NAMESPACE_VERSION=85 \
     CDC_QUERY_MINIFIER_VERSION=85 \
     CDC_REDACT_BEFORE=95 \
+    CDC_SOURCE_METADATA=97 \
     DEBEZIUM_CORE_VERSION="1.4.0.Final"
 
 
@@ -25,6 +26,7 @@ RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARG
     docker-maven-download cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" e71d2f7899be4bbe3ed6b9eda3fc9187 && \
     docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" da293091385fb2f80ed8b950efb3eda6 && \
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" 744256703856bcb660bb1e54576ee226 && \
+    docker-maven-download cdc-jar com/shopify cdc-source-metadata "$CDC_SOURCE_METADATA" 73155702e463a68e4a143a6fcfbab349 && \
     docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" bcbc9b3d39c685ba2bd2992913eb58b6
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]
