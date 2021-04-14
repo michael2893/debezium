@@ -63,7 +63,7 @@ set_version() {
 
 build_and_push_image() {
   docker build \
-    --build-arg JARS_PACKAGE_CLOUD_TOKEN="${JARS_PACKAGE_CLOUD_TOKEN:-''}" \
+    --build-arg JARS_CLOUDSMITH_TOKEN="${JARS_CLOUDSMITH_TOKEN:-''}" \
     -t "debezium" .
   docker tag debezium:latest "${GCR_PATH}":"${1}-${SHA}"
   docker push "${GCR_PATH}":"${1}-${SHA}"
