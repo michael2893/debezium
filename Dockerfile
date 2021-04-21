@@ -8,7 +8,7 @@ RUN /app/script/install_maven
 WORKDIR /app/src
 COPY . /app/src/
 
-ENV DEBEZIUM_VERSION "1.5.0-SNAPSHOT"
+ENV DEBEZIUM_VERSION "1.6.0-SNAPSHOT"
 RUN /app/script/build_connector_mysql
 
 # DEBEZIUM_CORE_VERSION is used to import debezium-core for all versions of DBZ released with this pipeline.

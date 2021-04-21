@@ -88,6 +88,7 @@ main() {
   # tag must exist in upstream
   if is_tag_unique "${version}"; then error "Tag does not exist in debezium/debezium"; fi
 
+  git branch -D tmp || true
   git switch -c tmp "${version}"
   setup_build
   set_version "${short_version}"
