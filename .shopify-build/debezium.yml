@@ -2,25 +2,44 @@
 containers:
   latest:
     environment: production
+    build:
+      command: pipa build -- ./script/build_latest
+      timeout: 30m
+      env:
+        PIPA_PIPELINE_TEMPLATE: dockerfile
+        PIPA_DOCKERFILE: Dockerfile
+        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
+        PIPA_USE_BUILDPACK_CACHE: "true"
+        PIPA_TAG_BRANCH: "true"
+        DOCKER_BUILDKIT: "true"
   1.4.0:
     environment: 1.4.0
     build:
       command: pipa build -- ./script/build v1.4.0.Final
+      timeout: 30m
       env:
         PIPA_GIT_CLONE_FLAGS: " "
+        PIPA_PIPELINE_TEMPLATE: dockerfile
+        PIPA_DOCKERFILE: Dockerfile
+        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
+        PIPA_USE_BUILDPACK_CACHE: "true"
+        PIPA_TAG_BRANCH: "true"
+        DOCKER_BUILDKIT: "true"
   1.5.0:
     environment: 1.5.0 
     build:
       command: pipa build -- ./script/build v1.5.0.Final
+      timeout: 30m
       env:
         PIPA_GIT_CLONE_FLAGS: " "
+        PIPA_PIPELINE_TEMPLATE: dockerfile
+        PIPA_DOCKERFILE: Dockerfile
+        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
+        PIPA_USE_BUILDPACK_CACHE: "true"
+        PIPA_TAG_BRANCH: "true"
+        DOCKER_BUILDKIT: "true"
 
 steps:
   - build: 1.5.0
   - build: 1.4.0
   - build: latest
-  - wait
-  - label: Test Connector
-    run: cd src && ../script/test_connector_mysql
-    container: latest
-    timeout: 20m

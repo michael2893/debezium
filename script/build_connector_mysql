@@ -1,5 +1,5 @@
 #!/bin/bash
 set -euox pipefail
 
-mvn install -B -pl debezium-connector-mysql -am -Passembly -DskipITs -DskipTests
+mvn clean package -pl debezium-connector-mysql -am -Passembly -DskipITs -DskipTests
 tar -xzf debezium-connector-mysql/target/debezium-connector-mysql-${DEBEZIUM_VERSION}-plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR

@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+APP_GROUP="apps"
+APP_ENV="production"
+REPO_SHOP="gcr.io/shopify-docker-images"
+GCR_PATH="${REPO_SHOP}/${APP_GROUP}/${APP_ENV}/debezium"
+
+DEFAULT_SHA=$(git rev-parse HEAD)
+SHA="${BUILDKITE_COMMIT:-$DEFAULT_SHA}"
+
+copy_poms() {
+  mkdir -p poms
+  find ./ -name pom.xml -exec cp -r --parents '{}' 'poms/' \;
+}
+
+rm_poms() {
+  rm -r poms
+}

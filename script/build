@@ -14,13 +14,7 @@ set -euo pipefail
 #
 ########################################################################################################################
 
-APP_GROUP="apps"
-APP_ENV="production"
-REPO_SHOP="gcr.io/shopify-docker-images"
-GCR_PATH="${REPO_SHOP}/${APP_GROUP}/${APP_ENV}/debezium"
-
-DEFAULT_SHA=$(git rev-parse HEAD)
-SHA="${BUILDKITE_COMMIT:-$DEFAULT_SHA}"
+. script/build_utils
 
 error() {
   echo -e "💩! ${1}\n" 1>&2 && exit 1
@@ -62,9 +56,14 @@ set_version() {
 }
 
 build_and_push_image() {
+  copy_poms
   docker build \
     --build-arg JARS_CLOUDSMITH_TOKEN="${JARS_CLOUDSMITH_TOKEN:-''}" \
+    --build-arg GO_OFFLINE="mvn -f /app/src/poms/pom.xml dependency:go-offline -DincludeScope=compile -pl debezium-connector-mysql -am" \
+    --build-arg IGNORE_CACHE_ERROR="false" \
+    --build-arg BUILD_CONNECTOR_MYSQL="/app/script/build_connector_mysql" \
     -t "debezium" .
+  rm_poms
   docker tag debezium:latest "${GCR_PATH}":"${1}-${SHA}"
   docker push "${GCR_PATH}":"${1}-${SHA}"
 

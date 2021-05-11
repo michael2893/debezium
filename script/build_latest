@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+
+. script/build_utils
+
+build_and_push_image() {
+  copy_poms
+  docker build \
+    --build-arg JARS_CLOUDSMITH_TOKEN="${JARS_CLOUDSMITH_TOKEN:-''}" \
+    --build-arg GO_OFFLINE="mvn -f /app/src/poms/pom.xml dependency:go-offline -DexcludeGroupIds=io.debezium -pl debezium-connector-mysql -am" \
+    --build-arg IGNORE_CACHE_ERROR="true" \
+    --build-arg BUILD_CONNECTOR_MYSQL="/app/script/test_connector_mysql" \
+    -t "debezium" .
+  rm_poms
+  docker tag debezium:latest "${GCR_PATH}":"${SHA}"
+  docker push "${GCR_PATH}":"${SHA}"
+
+  if [ "${BUILDKITE_BRANCH}" == "master" ]; then
+    docker tag debezium:latest "${GCR_PATH}":"latest"
+    docker push "${GCR_PATH}":"latest"
+  fi
+}
+
+main() {
+    build_and_push_image
+}
+
+main "$@"

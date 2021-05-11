@@ -1,15 +1,27 @@
+# syntax=docker/dockerfile:1.0-experimental
+
 FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.6.2
 
 USER root
-COPY script/ /app/script/
-
+COPY script/install_maven /app/script/
 RUN /app/script/install_maven
+COPY poms/ /app/src/poms/
+ARG GO_OFFLINE
+ARG IGNORE_CACHE_ERROR
+RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml    \
+    --mount=type=cache,target=/root/.m2/repository       \
+    $GO_OFFLINE || $IGNORE_CACHE_ERROR
+
+COPY script/ /app/script/
 
 WORKDIR /app/src
 COPY . /app/src/
 
+ARG BUILD_CONNECTOR_MYSQL
 ENV DEBEZIUM_VERSION "1.6.0-SNAPSHOT"
-RUN /app/script/build_connector_mysql
+RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
+    --mount=type=cache,target=/root/.m2/repository       \
+    $BUILD_CONNECTOR_MYSQL
 
 # DEBEZIUM_CORE_VERSION is used to import debezium-core for all versions of DBZ released with this pipeline.
 
