@@ -25,10 +25,10 @@ containers:
         PIPA_USE_BUILDPACK_CACHE: "true"
         PIPA_TAG_BRANCH: "true"
         DOCKER_BUILDKIT: "true"
-  1.5.0:
-    environment: 1.5.0 
+  1.5.1:
+    environment: 1.5.1 
     build:
-      command: pipa build -- ./script/build v1.5.0.Final
+      command: pipa build -- ./script/build v1.5.1.Final
       timeout: 30m
       env:
         PIPA_GIT_CLONE_FLAGS: " "
@@ -40,6 +40,6 @@ containers:
         DOCKER_BUILDKIT: "true"
 
 steps:
-  - build: 1.5.0
+  - build: 1.5.1
   - build: 1.4.0
   - build: latest
