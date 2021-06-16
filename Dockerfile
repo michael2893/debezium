@@ -25,7 +25,7 @@ RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
 
 # DEBEZIUM_CORE_VERSION is used to import debezium-core for all versions of DBZ released with this pipeline.
 
-ENV CDC_LARGE_RECORD_VERSION=2ea8ccf \
+ENV CDC_LARGE_RECORD_VERSION=e2878d4 \
     CDC_REWRITE_NAMESPACE_VERSION=2ea8ccf \
     CDC_QUERY_MINIFIER_VERSION=2ea8ccf \
     CDC_REDACT_BEFORE=2ea8ccf \
@@ -35,7 +35,7 @@ ENV CDC_LARGE_RECORD_VERSION=2ea8ccf \
 
 ARG JARS_CLOUDSMITH_TOKEN
 
-RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 83f8c369641df4e2f097af00269f71a9 && \
+RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" f5da682ddb31b976ad024b628f84425b && \
     docker-maven-download cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" bae212c7e9f67330381036885e5c2fc9 && \
     docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" 0efe8462f94a7bc8ec46149fd2417e39 && \
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" 524960211bae4beea43dd8df93e6e2c0 && \
