@@ -15,7 +15,7 @@ containers:
   1.6.0:
     environment: 1.6.0
     build:
-      command: pipa build -- ./script/build v1.6.0.Beta2
+      command: pipa build -- ./script/build v1.6.0.Final
       timeout: 30m
       env:
         PIPA_GIT_CLONE_FLAGS: " "
