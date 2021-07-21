@@ -3,6 +3,7 @@ set -eu
 
 ca_pem_file="/kafka/ca.pem"
 ca_tmp_file="/tmp/ca.pem"
+kafka_secrets_location="/kafka/secrets/*"
 
 IFS=','
 read -ra SERVERS <<< "${BOOTSTRAP_SERVERS}"
@@ -30,3 +31,19 @@ keytool -noprompt -keystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} -alias CARoot -im
 # JDK defaults imported to our custom store means no cat and mouse to keep up with the JDK
 keytool -importkeystore -noprompt -srckeystore ${JAVA_HOME}/lib/security/cacerts -srcstorepass ${CONNECT_SSL_KEYSTORE_PASSWORD} \
     -destkeystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} -deststorepass ${CONNECT_SSL_KEYSTORE_PASSWORD}
+
+# Support trust and keystore setup for connectors with client cert authentication support
+for directory in ${kafka_secrets_location}; do
+  if [ -d "${directory}" ]; then
+    connector=${directory##*/}
+    openssl pkcs12 -export -password pass:changeit -out /tmp/${connector}_ks.p12 \
+  -inkey /kafka/secrets/${connector}/cert.key -certfile /kafka/secrets/${connector}/ca.crt -in /kafka/secrets/${connector}/cert.crt -caname 'CA Root' -name client
+
+    keytool -importkeystore -noprompt -srckeystore /tmp/${connector}_ks.p12 -destkeystore /tmp/${connector}_keystore.jks \
+  -srcstoretype pkcs12 -srcstorepass changeit -srckeypass changeit \
+  -destkeypass changeit -deststorepass changeit -alias client
+
+    keytool -noprompt -keystore /tmp/${connector}_truststore.jks -alias CARoot -import \
+  -file /kafka/secrets/${connector}/ca.crt -storepass changeit
+  fi
+done

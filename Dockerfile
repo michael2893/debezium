@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.0-experimental
 
-FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.6.2
+FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.6.2-1
 
 USER root
 COPY script/install_maven /app/script/
@@ -41,5 +41,8 @@ RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARG
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" 524960211bae4beea43dd8df93e6e2c0 && \
     docker-maven-download cdc-jar com/shopify cdc-source-metadata "$CDC_SOURCE_METADATA" 5b70889907d353b58f53b607ff5b86e0 && \
     docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" 4da16b4f5e1c6a3fc77a0150305ab079
+
+# Introduce support for initial incorporation of experimental or custom built connectors for testing
+COPY support/connectors/* /kafka/connect/
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]
