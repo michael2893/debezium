@@ -37,7 +37,7 @@ for directory in ${kafka_secrets_location}; do
   if [ -d "${directory}" ]; then
     connector=${directory##*/}
     openssl pkcs12 -export -password pass:changeit -out /tmp/${connector}_ks.p12 \
-  -inkey /kafka/secrets/${connector}/cert.key -certfile /kafka/secrets/${connector}/ca.crt -in /kafka/secrets/${connector}/cert.crt -caname 'CA Root' -name client
+  -inkey /kafka/secrets/${connector}/tls.key -certfile /kafka/secrets/${connector}/ca.crt -in /kafka/secrets/${connector}/tls.crt -caname 'CA Root' -name client
 
     keytool -importkeystore -noprompt -srckeystore /tmp/${connector}_ks.p12 -destkeystore /tmp/${connector}_keystore.jks \
   -srcstoretype pkcs12 -srcstorepass changeit -srckeypass changeit \
