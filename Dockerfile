@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.0-experimental
 
-FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.6.2-1
+FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.7.1
 
 USER root
 COPY script/install_maven /app/script/
@@ -30,7 +30,7 @@ ENV CDC_LARGE_RECORD_VERSION=25e4a0f \
     CDC_QUERY_MINIFIER_VERSION=2ea8ccf \
     CDC_REDACT_BEFORE=2ea8ccf \
     CDC_SOURCE_METADATA=2ea8ccf \
-    DEBEZIUM_CORE_VERSION="1.5.1.Final"
+    DEBEZIUM_CORE_VERSION="1.7.0.Final"
 
 
 ARG JARS_CLOUDSMITH_TOKEN
@@ -40,7 +40,7 @@ RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARG
     docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" 0efe8462f94a7bc8ec46149fd2417e39 && \
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" 524960211bae4beea43dd8df93e6e2c0 && \
     docker-maven-download cdc-jar com/shopify cdc-source-metadata "$CDC_SOURCE_METADATA" 5b70889907d353b58f53b607ff5b86e0 && \
-    docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" 4da16b4f5e1c6a3fc77a0150305ab079
+    docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" 88280c0bb76058004106fd2933007bc3 
 
 # Introduce support for initial incorporation of experimental or custom built connectors for testing
 COPY support/connectors/* /kafka/connect/
