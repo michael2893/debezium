@@ -27,7 +27,7 @@ RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
 
 ENV CDC_LARGE_RECORD_VERSION=25e4a0f \
     CDC_REWRITE_NAMESPACE_VERSION=2ea8ccf \
-    CDC_QUERY_MINIFIER_VERSION=57bd40a \
+    CDC_QUERY_MINIFIER_VERSION=a7cedc9 \
     CDC_REDACT_BEFORE=2ea8ccf \
     CDC_SOURCE_METADATA=2ea8ccf \
     CDC_SLOW_DOWN=cc230e6 \
@@ -38,7 +38,7 @@ ARG JARS_CLOUDSMITH_TOKEN
 
 RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 78c2cdb9d3c2fee960aa6587722fb982 && \
     docker-maven-download cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" bae212c7e9f67330381036885e5c2fc9 && \
-    docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" 449eab38e5f72b108256f2f69be5f9c8 && \
+    docker-maven-download cdc-jar com/shopify cdc-query-minifier "$CDC_QUERY_MINIFIER_VERSION" c2e2e53d9ab692f4412cb30e92928aa9 && \
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" 524960211bae4beea43dd8df93e6e2c0 && \
     docker-maven-download cdc-jar com/shopify cdc-source-metadata "$CDC_SOURCE_METADATA" 5b70889907d353b58f53b607ff5b86e0 && \
     docker-maven-download shaded-cdc-jar com/shopify cdc-slow-down "$CDC_SLOW_DOWN" ebd2d78d6ec248f4d528368bedc9e168 && \
