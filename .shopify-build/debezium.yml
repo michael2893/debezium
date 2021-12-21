@@ -12,19 +12,6 @@ containers:
         PIPA_USE_BUILDPACK_CACHE: "true"
         PIPA_TAG_BRANCH: "true"
         DOCKER_BUILDKIT: "true"
-  1.6.0:
-    environment: 1.6.0
-    build:
-      command: pipa build -- ./script/build v1.6.0.Final
-      timeout: 30m
-      env:
-        PIPA_GIT_CLONE_FLAGS: " "
-        PIPA_PIPELINE_TEMPLATE: dockerfile
-        PIPA_DOCKERFILE: Dockerfile
-        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
-        PIPA_USE_BUILDPACK_CACHE: "true"
-        PIPA_TAG_BRANCH: "true"
-        DOCKER_BUILDKIT: "true"
   1.7.0:
     environment: 1.7.0
     build:
@@ -41,7 +28,7 @@ containers:
   1.8.0:
     environment: 1.8.0
     build:
-      command: pipa build -- ./script/build v1.8.0.Alpha1
+      command: pipa build -- ./script/build v1.8.0.Final
       timeout: 30m
       env:
         PIPA_GIT_CLONE_FLAGS: " "
@@ -53,7 +40,6 @@ containers:
         DOCKER_BUILDKIT: "true"
 
 steps:
-  - build: 1.6.0
   - build: 1.7.0
   - build: 1.8.0
   - build: latest
