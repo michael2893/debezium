@@ -18,7 +18,7 @@ WORKDIR /app/src
 COPY . /app/src/
 
 ARG BUILD_CONNECTOR_MYSQL
-ENV DEBEZIUM_VERSION "1.8.0-SNAPSHOT"
+ENV DEBEZIUM_VERSION "1.9.0-SNAPSHOT"
 RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
     --mount=type=cache,target=/root/.m2/repository       \
     $BUILD_CONNECTOR_MYSQL

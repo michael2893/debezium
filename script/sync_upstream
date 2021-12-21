@@ -27,12 +27,12 @@ is_git_clean() {
 
 sync_upstream() {
   git checkout pristine-master
-  git pull upstream master
+  git pull upstream main
   git push origin pristine-master
 
   git checkout master
   git pull origin master
-  git rebase upstream/master
+  git rebase upstream/main
   git push --force-with-lease origin master
 }
 
