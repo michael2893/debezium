@@ -31,7 +31,7 @@ ENV CDC_LARGE_RECORD_VERSION=25e4a0f \
     CDC_REDACT_BEFORE=2ea8ccf \
     CDC_SOURCE_METADATA=2ea8ccf \
     CDC_SLOW_DOWN=cc230e6 \
-    DEBEZIUM_CORE_VERSION="1.7.0.Final"
+    DEBEZIUM_CORE_VERSION="1.8.0.Final"
 
 
 ARG JARS_CLOUDSMITH_TOKEN
@@ -42,8 +42,8 @@ RUN docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARG
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" 524960211bae4beea43dd8df93e6e2c0 && \
     docker-maven-download cdc-jar com/shopify cdc-source-metadata "$CDC_SOURCE_METADATA" 5b70889907d353b58f53b607ff5b86e0 && \
     docker-maven-download shaded-cdc-jar com/shopify cdc-slow-down "$CDC_SLOW_DOWN" ebd2d78d6ec248f4d528368bedc9e168 && \
-    docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" 88280c0bb76058004106fd2933007bc3 && \
-    docker-maven-download central io/debezium debezium-api "$DEBEZIUM_CORE_VERSION" c3ef24fef9f40b95b5e37bc899139c4d
+    docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" 66f609f5df6e037b1f41694b1ac63ff5 && \
+    docker-maven-download central io/debezium debezium-api "$DEBEZIUM_CORE_VERSION" 02aee962ed6accac1be4396ccc129131
 
 # Introduce support for initial incorporation of experimental or custom built connectors for testing
 COPY support/connectors/* /kafka/connect/
