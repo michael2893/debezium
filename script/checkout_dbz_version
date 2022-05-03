@@ -1,0 +1,64 @@
+#!/bin/bash
+set -euo pipefail
+
+########################################################################################################################
+# Usage: script/checkout_dbz_version [upstream tag]
+# Example: script/checkout_dbz_version v1.0.0.Final
+# This script should only be used as a part of Shopify Build Container builds, it should not be used manually.
+#
+# Does the following:
+# * checkout the tagged version from upstream debezium/debezium, or skips if we just want to build the latest version
+#
+########################################################################################################################
+
+. script/build_utils
+
+error() {
+  echo -e "💩! ${1}\n" 1>&2 && exit 1
+}
+
+add_upstream() {
+  if ! git remote -v | grep upstream; then
+    git remote add upstream https://github.com/debezium/debezium.git
+  fi
+}
+
+fetch_all() {
+  git fetch upstream --tags
+  git fetch origin pristine-master
+  git fetch origin master
+}
+
+checkout_upstream() {
+  # git checkout pristine-master
+  git checkout ${BUILDKITE_BRANCH}
+}
+
+is_tag_unique() {
+  [ -z "$(git ls-remote -t -q https://github.com/debezium/debezium | grep "${1}")" ]
+}
+
+parse_version() {
+  echo "${1}" | sed 's/^v//'
+}
+
+
+main() {
+  if [ "${2-false}" == "true" ]; then
+    exit 0
+  fi
+
+  add_upstream
+  fetch_all
+
+  local version="${1}"
+  local short_version=$(parse_version "${1}")
+  if [[ -z "${short_version}" ]]; then error "Unable to parse tag ${version}"; fi
+  # tag must exist in upstream
+  if is_tag_unique "${version}"; then error "Tag does not exist in debezium/debezium"; fi
+
+  git branch -D tmp || true
+  git switch -c tmp "${version}"
+}
+
+main "$@"

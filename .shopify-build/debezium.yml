@@ -1,45 +1,30 @@
 ---
 containers:
+  v1.8.0.Final:
+    application: dbz-v1.8.0.final
+    dockerfile:
+      build_args:
+        DEBEZIUM_VERSION: "v1.8.0.Final"
+        IS_LATEST: "false"
+        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
+  v1.9.0.Alpha2:
+    application: dbz-v1.9.0.alpha2
+    dockerfile:
+      build_args:
+        DEBEZIUM_VERSION: "v1.9.0.Alpha2"
+        IS_LATEST: "false"
+        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
   latest:
-    environment: production
-    build:
-      command: pipa build -- ./script/build_latest
-      timeout: 30m
-      env:
-        PIPA_PIPELINE_TEMPLATE: dockerfile
-        PIPA_DOCKERFILE: Dockerfile
-        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
-        PIPA_USE_BUILDPACK_CACHE: "true"
-        PIPA_TAG_BRANCH: "true"
-        DOCKER_BUILDKIT: "true"
-  1.9.0:
-    environment: 1.9.0
-    build:
-      command: pipa build -- ./script/build v1.9.0.Alpha2
-      timeout: 30m
-      env:
-        PIPA_GIT_CLONE_FLAGS: " "
-        PIPA_PIPELINE_TEMPLATE: dockerfile
-        PIPA_DOCKERFILE: Dockerfile
-        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
-        PIPA_USE_BUILDPACK_CACHE: "true"
-        PIPA_TAG_BRANCH: "true"
-        DOCKER_BUILDKIT: "true"
-  1.8.0:
-    environment: 1.8.0
-    build:
-      command: pipa build -- ./script/build v1.8.0.Final
-      timeout: 30m
-      env:
-        PIPA_GIT_CLONE_FLAGS: " "
-        PIPA_PIPELINE_TEMPLATE: dockerfile
-        PIPA_DOCKERFILE: Dockerfile
-        PIPA_DOCKER_CACHE_FROM_BRANCH: "true"
-        PIPA_USE_BUILDPACK_CACHE: "true"
-        PIPA_TAG_BRANCH: "true"
-        DOCKER_BUILDKIT: "true"
+    application: debezium
+    dockerfile:
+      build_args:
+        DEBEZIUM_VERSION: "1.9.0-SNAPSHOT"
+        IS_LATEST: "true"
+        BUILD_CONNECTOR_MYSQL: "/app/script/test_connector_mysql"
+
+
 
 steps:
-  - build: 1.8.0
-  - build: 1.9.0
   - build: latest
+  - build: v1.9.0.Alpha2
+  - build: v1.8.0.Final
