@@ -46,7 +46,4 @@ RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
     docker-maven-download central io/debezium debezium-api "$DEBEZIUM_CORE_VERSION" 7906d55cc0e65098421e64f733c5f2f5 && \
     docker-maven-download debezium vitess "$DEBEZIUM_CORE_VERSION" ba4b0e27759c9f43a7d619daa315c6b6
 
-# Introduce support for initial incorporation of experimental or custom built connectors for testing
-COPY support/connectors/* /kafka/connect/
-
 ENTRYPOINT ["/app/script/entrypoint.sh"]
