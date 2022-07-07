@@ -5,6 +5,5 @@ parse_version() {
   echo "${1}" | sed 's/^v//'
 }
 
-
-mvn clean package -pl debezium-connector-mysql -am -Passembly -DskipITs -DskipTests
+mvn clean install -pl debezium-connector-mysql -am -Passembly -DskipITs -DskipTests
 tar -xzf debezium-connector-mysql/target/debezium-connector-mysql-$(parse_version ${DEBEZIUM_VERSION})-plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR

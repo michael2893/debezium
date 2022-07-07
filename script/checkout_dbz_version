@@ -10,7 +10,7 @@ set -euo pipefail
 # * checkout the tagged version from upstream debezium/debezium, or skips if we just want to build the latest version
 #
 ########################################################################################################################
-
+git config --global --add safe.directory /app/src
 . script/build_utils
 
 error() {

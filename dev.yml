@@ -2,12 +2,22 @@
 name: debezium
 up:
   - custom:
-      name: install openjdk java11
-      met?: brew list --cask | grep '^adoptopenjdk11$' >/dev/null 2>&1
-      meet: brew install --cask adoptopenjdk/openjdk/adoptopenjdk11
+      name: Tap OpenJDK cask
+      met?: brew tap-info AdoptOpenJDK/openjdk | grep -v 'Not installed' >/dev/null 2>&1
+      meet: brew tap AdoptOpenJDK/openjdk
+  - custom:
+      name: Link openjdk@17 location
+      met?: ls /Library/Java/JavaVirtualMachines/openjdk.jdk >/dev/null 2>&1
+      meet: sudo ln -sfn $(brew --prefix openjdk@17)/libexec/openjdk.jdk  /Library/Java/JavaVirtualMachines/openjdk.jdk
+  - custom:
+      name: Set JAVA_HOME
+      met?: env | grep JAVA_HOME >/dev/null
+      meet: echo 'export JAVA_HOME=/usr/libexec/java_home' >> ~/.zshrc
   - homebrew:
-    - maven
-  - java: "11"
+      - openjdk@17
+      - maven
+  - java: "17"
+  - podman
 
 build: "mvn clean install -Passembly -DskipITs -DskipTests"
 test: "mvn clean install -Passembly"

@@ -18,7 +18,7 @@ containers:
     application: debezium
     dockerfile:
       build_args:
-        DEBEZIUM_VERSION: "1.9.0-SNAPSHOT"
+        DEBEZIUM_VERSION: "2.0.0-SNAPSHOT"
         IS_LATEST: "true"
         BUILD_CONNECTOR_MYSQL: "/app/script/test_connector_mysql"
 
