@@ -26,7 +26,8 @@ keytool -importkeystore -noprompt -srckeystore ${KEYSTORE_LOCATION} -destkeystor
 keytool -noprompt -keystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} -alias CARoot -import \
     -file ${ca_pem_file} -storepass ${CONNECT_SSL_TRUSTSTORE_PASSWORD}
 
-if test -f ${KATESQL_CA_CERT_PATH}; then
+KATESQL_CA_CERT_PATH="${KATESQL_CA_CERT_PATH:-/app/config/katesql-cert.pem}"
+if test -f "$KATESQL_CA_CERT_PATH"; then
   keytool -import -noprompt -alias katesqlcert \
       -storepass ${CONNECT_SSL_TRUSTSTORE_PASSWORD} \
       -keystore ${CONNECT_SSL_TRUSTSTORE_LOCATION} \
