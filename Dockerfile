@@ -31,6 +31,7 @@ ENV CDC_LARGE_RECORD_VERSION=9632679 \
     CDC_REDACT_BEFORE=9632679 \
     CDC_SOURCE_METADATA=9632679 \
     CDC_SLOW_DOWN=01bd81e \
+    CDC_DOMAIN_EVENTS=83cffd7 \
     DEBEZIUM_CORE_VERSION="1.9.3.Final"
 
 # NB: use md5 of cdc-large-record-shaded and cdc-slow-down-shaded below!
@@ -42,6 +43,7 @@ RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
     docker-maven-download cdc-jar com/shopify cdc-redact-before "$CDC_REDACT_BEFORE" c776a8a64b6a214035042badbe664846 && \
     docker-maven-download cdc-jar com/shopify cdc-source-metadata "$CDC_SOURCE_METADATA" 5924c6fcf1109fa38422b9499492d761 && \
     docker-maven-download shaded-cdc-jar com/shopify cdc-slow-down "$CDC_SLOW_DOWN" e65d18f84dfc06a201c99f276d35a1d1 && \
+    docker-maven-download cdc-jar com/shopify cdc-domain-events "$CDC_DOMAIN_EVENTS" b78a8c696b37f7cdde461198e9edb451 && \
     docker-maven-download central io/debezium debezium-core "$DEBEZIUM_CORE_VERSION" a48600b50730a2cbafbf36cf7fc60792 && \
     docker-maven-download central io/debezium debezium-api "$DEBEZIUM_CORE_VERSION" 7906d55cc0e65098421e64f733c5f2f5 && \
     docker-maven-download debezium vitess "$DEBEZIUM_CORE_VERSION" ba4b0e27759c9f43a7d619daa315c6b6
