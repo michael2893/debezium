@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.0-experimental
 
-FROM gcr.io/shopify-docker-images/cloud/kafka-connect:2.8.1-6
+FROM gcr.io/shopify-docker-images/cloud/kafka-connect:3.2.0-0
 
 USER root
 RUN apt-get update && \
