@@ -1,12 +1,5 @@
 ---
 containers:
-  v1.9.3.Final:
-    application: dbz-v1.9.3.final
-    dockerfile:
-      build_args:
-        DEBEZIUM_VERSION: "v1.9.3.Final"
-        IS_LATEST: "false"
-        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
   v2.0.0.CR1:
     application: dbz-v2.0.0.cr1
     dockerfile:
@@ -34,5 +27,4 @@ containers:
 steps:
   - build: latest
   - build: latest-test
-  - build: v1.9.3.Final
   - build: v2.0.0.CR1

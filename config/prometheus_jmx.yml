@@ -1,0 +1,29 @@
+#hostPort: 127.0.0.1:8081
+lowercaseOutputName: true
+whitelistObjectNames:
+  - java.lang:type=GarbageCollector,*
+  - java.lang:type=Memory,*
+  - java.lang:type=Threading,*
+
+blacklistObjectNames:
+  - cats.effect.unsafe.metrics:*
+  - kafka.consumer.consumer.metrics:*
+  - java.lang:type=MemoryPool,*
+  - java.lang:type=MemoryManager,*
+  - java.lang:type=ClassLoading,*
+  - java.nio:*
+  - java.util.logging:*
+  - jdk.management.jfr:*
+
+rules:
+  - pattern: 'java.lang<type=Threading><>([A-Za-z0-9-_]*): (.*)'
+    name: debezium_threading_$1
+    value: $2
+  - pattern: 'java.lang<type=Memory><(.*)>([A-Za-z0-9-_]*): (.*)'
+    name: debezium_memory_$1_$2
+    value: $3
+  - pattern: 'java.lang<name=(.*), type=GarbageCollector(.*)><(.*)>([A-Za-z0-9-_]*): (.*)'
+    name: debezium_gc_$1_$3_$4
+    value: $5
+#  - pattern: '(.*)'
+#    name: $0

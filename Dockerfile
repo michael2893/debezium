@@ -7,6 +7,7 @@ RUN apt-get update && \
     apt-get install -y git
 
 COPY script/ /app/script/
+COPY config /app/config
 
 WORKDIR /app/src
 COPY . /app/src/
