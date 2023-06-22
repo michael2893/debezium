@@ -30,6 +30,12 @@ rules:
   - pattern: 'java.lang<name=(.*), type=GarbageCollector(.*)><(.*)>([A-Za-z0-9-_]*): (.*)'
     name: debezium_gc_$1_$3_$4
     value: $5
+  - pattern: 'kafka.connect<type=source-task-metrics, connector=(.+), task=(.+)><>([a-z-]+): (.*)'
+    name: debezium_kafka_connect_connector_source_task_metrics_$3
+    value: "$4"
+    labels:
+      connector: "$1"
+      task: "$2"
   - pattern: 'kafka.connect<type=connector-task-metrics, connector=(.+), task=(.+)><>status: ([a-z-]+)'
     name: debezium_kafka_connect_connector_status
     value: 1
@@ -45,6 +51,10 @@ rules:
   - pattern: 'kafka.connect<type=connect-worker-metrics><>([a-z-]+): (.*)'
     name: debezium_kafka_connect_worker_$1
     value: "$2"
+  - pattern: 'kafka.connect<type=connect-coordinator-metrics, client-id=([^:]+)><>([^:]+)'
+    name: "debezium_kafka_connect_coordinator_metrics_$2"
+    labels:
+      client: "$1"
   - pattern: 'kafka.connect<type=connect-metrics, client-id=([^:]+)><>([^:]+)'
     name: "debezium_kafka_connect_metrics_$2"
     labels:
