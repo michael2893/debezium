@@ -12,6 +12,10 @@ COPY config /app/resources
 WORKDIR /app/src
 COPY . /app/src/
 
+# Enable GCP cloud profiler for Java, to extract to the maven-gradle-sbt-jdk base image
+RUN mkdir -p /opt/cprof/ &&\
+    wget -q -O- https://storage.googleapis.com/cloud-profiler/java/latest/profiler_java_agent.tar.gz | tar xzv -C /opt/cprof
+
 ARG DEBEZIUM_VERSION
 ARG IS_LATEST
 RUN \
