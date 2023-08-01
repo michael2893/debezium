@@ -7,13 +7,6 @@ containers:
         DEBEZIUM_VERSION: "v2.3.0.Final"
         IS_LATEST: "false"
         BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
-  v2.2.0.Final:
-    application: dbz-v2.2.0.final
-    dockerfile:
-      build_args:
-        DEBEZIUM_VERSION: "v2.2.0.Final"
-        IS_LATEST: "false"
-        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
   latest:
     application: debezium
     dockerfile:
@@ -35,4 +28,3 @@ steps:
   - build: latest
   - build: latest-test
   - build: v2.3.0.Final
-  - build: v2.2.0.Final
