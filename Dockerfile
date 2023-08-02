@@ -1,10 +1,6 @@
-# syntax=docker/dockerfile:1.0-experimental
-
 FROM gcr.io/shopify-docker-images/cloud/kafka-connect:3.4.0-2
 
 USER root
-RUN apt-get update && \
-    apt-get install -y git
 
 COPY script/ /app/script/
 COPY config /app/resources
@@ -52,5 +48,14 @@ RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
     docker-maven-download central io/debezium debezium-api "$DEBEZIUM_CORE_VERSION" 6810b562eb342067d301a9d3c9c29097 && \
     docker-maven-download central io/debezium debezium-connector-vitess "$DEBEZIUM_CORE_VERSION" 37587c505cb3214abb27c4371c8992b1 && \
     docker-maven-download central io/grpc grpc-api "$GRPC_VERSION" 58cb4f05581a5cadf82449b41e3aa50d
+
+RUN \
+  --mount=type=secret,id=gitconfig,target=/etc/gitconfig,required=true \
+  --mount=type=secret,id=git-credential-helper \
+  --mount=type=secret,id=gitcredentials \
+  cd /tmp && \
+  git clone https://github.com/Shopify/cdc.git && \
+  cp /tmp/cdc/scripts/cert_check.sh /tmp/cdc/scripts/health_check.sh /usr/local/ && \
+  rm -rf /tmp/cdc
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]
