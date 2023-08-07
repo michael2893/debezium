@@ -1,23 +1,13 @@
 ---
 name: debezium
 up:
-  - custom:
-      name: Tap OpenJDK cask
-      met?: brew tap-info AdoptOpenJDK/openjdk | grep -v 'Not installed' >/dev/null 2>&1
-      meet: brew tap AdoptOpenJDK/openjdk
-  - custom:
-      name: Link openjdk@17 location
-      met?: ls /Library/Java/JavaVirtualMachines/openjdk.jdk >/dev/null 2>&1
-      meet: sudo ln -sfn $(brew --prefix openjdk@17)/libexec/openjdk.jdk  /Library/Java/JavaVirtualMachines/openjdk.jdk
-  - custom:
-      name: Set JAVA_HOME
-      met?: env | grep JAVA_HOME >/dev/null
-      meet: echo 'export JAVA_HOME=/usr/libexec/java_home' >> ~/.zshrc
   - homebrew:
-      - openjdk@17
       - maven
-  - java: "17"
-  - podman
+  - maven:
+      - jars
+  - jdk:
+      version: "17"
+      distribution: zulu
 
 build: "mvn clean install -Passembly -DskipITs -DskipTests"
 test: "mvn clean install -Passembly"
