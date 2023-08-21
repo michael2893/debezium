@@ -25,12 +25,12 @@ add_upstream() {
 
 fetch_all() {
   git fetch upstream --tags
-  git fetch origin pristine-master
-  git fetch origin master
+  git fetch origin pristine-main
+  git fetch origin main
 }
 
 checkout_upstream() {
-  # git checkout pristine-master
+  # git checkout pristine-main
   git checkout ${BUILDKITE_BRANCH}
 }
 

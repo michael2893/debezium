@@ -15,7 +15,7 @@ build_and_push_image() {
   docker tag debezium:latest "${GCR_PATH}":"${SHA}"
   docker push "${GCR_PATH}":"${SHA}"
 
-  if [ "${BUILDKITE_BRANCH}" == "master" ]; then
+  if [ "${BUILDKITE_BRANCH}" == "main" ]; then
     docker tag debezium:latest "${GCR_PATH}":"latest"
     docker push "${GCR_PATH}":"latest"
   fi

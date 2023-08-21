@@ -5,8 +5,8 @@ set -euox pipefail
 # Usage: script/sync_upstream
 # Example: script/sync_upstream
 #
-# This script sync's the pristine-master branch with Debezium/Debezium master, and rebases the Shopify/Debezium master
-# branch on pristine-master.
+# This script sync's the pristine-main branch with Debezium/Debezium main, and rebases the Shopify/Debezium main
+# branch on pristine-main.
 #
 ########################################################################################################################
 
@@ -16,8 +16,8 @@ error() {
   echo -e "💩! ${1}\n" 1>&2 && exit 1
 }
 
-is_on_master() {
-  [ "${BRANCH}" == "master" ]
+is_on_main() {
+  [ "${BRANCH}" == "main" ]
 }
 
 is_git_clean() {
@@ -26,20 +26,20 @@ is_git_clean() {
 }
 
 sync_upstream() {
-  git checkout pristine-master
+  git checkout pristine-main
   git pull upstream main
-  git push origin pristine-master
+  git push origin pristine-main
 
-  git checkout master
-  git pull origin master
+  git checkout main
+  git pull origin main
   git rebase upstream/main
-  git push --force-with-lease origin master
+  git push --force-with-lease origin main
 }
 
 main() {
-  # can only sync from the master branch with a clean git index (nothing outstanding)
-  if ! is_on_master;
-    then error "Releases must be started from master.";
+  # can only sync from the main branch with a clean git index (nothing outstanding)
+  if ! is_on_main;
+    then error "Releases must be started from main.";
   fi
   if ! is_git_clean; then error "You need to commit or stash your changes to release"; fi
 
