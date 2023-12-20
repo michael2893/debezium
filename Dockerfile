@@ -36,6 +36,8 @@ ENV CDC_STATSD_METER_REGISTRY_VERSION=4ab8354 \
 # NB: use md5 of cdc-large-record-shaded and cdc-slow-down-shaded below!
 RUN --mount=type=secret,id=maven_read,dst=/root/.m2/settings.xml \
     --mount=type=cache,target=/root/.m2/repository       \
+    docker-maven-download confluent kafka-protobuf-serializer "$CONFLUENT_VERSION" 8f03ec2a7c770e5bec26762be481a08c && \
+    docker-maven-download confluent kafka-connect-protobuf-converter "$CONFLUENT_VERSION" a947c76e80d4d711e951bb7ff466d3f4 && \
     docker-maven-download cdc-jar com/shopify cdc-statsd-meter-registry "$CDC_STATSD_METER_REGISTRY_VERSION" 9ac3921091440b369d3e1aa758238cb5 && \
     docker-maven-download shaded-cdc-jar com/shopify cdc-large-record "$CDC_LARGE_RECORD_VERSION" 4d57bed681107e6acabc4518a4edef8e && \
     docker-maven-download cdc-jar com/shopify cdc-rewrite-namespace "$CDC_REWRITE_NAMESPACE_VERSION" 23b26c99d5ebb3bcb341510011a5991d && \
