@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -95,6 +96,8 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
      * Determines if the incremental snapshot was paused or not.
      */
     private final AtomicBoolean paused = new AtomicBoolean(false);
+    private final AtomicBoolean stopAll = new AtomicBoolean(false);
+    private final LinkedBlockingQueue<String> dataCollectionsToStop = new LinkedBlockingQueue<>();
 
     public AbstractIncrementalSnapshotContext(boolean useCatalogBeforeSchema) {
         this.useCatalogBeforeSchema = useCatalogBeforeSchema;
@@ -171,6 +174,31 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
         }
     }
 
+    public void resetStopFlag() {
+        stopAll.set(false);
+        dataCollectionsToStop.clear();
+    }
+
+    @Override
+    public boolean isStopAll() {
+        return stopAll.get();
+    }
+
+    @Override
+    public void stopAllSnapshots() {
+        this.snapshotDataCollection.clear();
+        this.correlationId = null;
+        stopAll.set(false);
+        dataCollectionsToStop.clear();
+    }
+
+    @Override
+    public List<String> getDataCollectionsToStop() {
+        List<String> drainedList = new ArrayList<>();
+        dataCollectionsToStop.drainTo(drainedList);
+        return drainedList;
+    }
+
     public boolean snapshotRunning() {
         return !snapshotDataCollection.isEmpty();
     }
@@ -224,15 +252,23 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
     }
 
     @Override
-    public void stopSnapshot() {
-        this.snapshotDataCollection.clear();
-        this.correlationId = null;
+    public void stopSnapshot(List<String> dataCollectionIds) {
+        if (stopAll.get()) {
+            return;
+        }
+        if (dataCollectionIds == null || dataCollectionIds.isEmpty()) {
+            stopAll.set(true);
+            dataCollectionsToStop.clear();
+        } else {
+            dataCollectionsToStop.addAll(dataCollectionIds);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public boolean removeDataCollectionFromSnapshot(String dataCollectionId) {
         final T collectionId = (T) TableId.parse(dataCollectionId, useCatalogBeforeSchema);
+        dataCollectionsToStop.remove(dataCollectionId);
         return snapshotDataCollection.remove(List.of(new DataCollection<>(collectionId)));
     }
 

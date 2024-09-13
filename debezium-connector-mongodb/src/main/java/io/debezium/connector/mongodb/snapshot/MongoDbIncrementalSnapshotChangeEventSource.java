@@ -439,7 +439,7 @@ public class MongoDbIncrementalSnapshotChangeEventSource
                 try {
                     // This must be called prior to closeWindow to ensure that the correct state is set
                     // to prevent chunk rads from triggering additional open/close events.
-                    context.stopSnapshot();
+                    context.stopSnapshot(null);
 
                     // Clear the state
                     window.clear();
