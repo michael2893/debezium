@@ -430,7 +430,7 @@ public class MongoDbIncrementalSnapshotChangeEventSource
 
     @Override
     @SuppressWarnings("unchecked")
-    public void stopSnapshot(MongoDbPartition partition, OffsetContext offsetContext, Map<String, Object> additionalData, List<String> dataCollectionPatterns) {
+    public void requestStopSnapshot(MongoDbPartition partition, OffsetContext offsetContext, Map<String, Object> additionalData, List<String> dataCollectionPatterns) {
 
         context = (IncrementalSnapshotContext<CollectionId>) offsetContext.getIncrementalSnapshotContext();
         if (context.snapshotRunning()) {
@@ -439,7 +439,7 @@ public class MongoDbIncrementalSnapshotChangeEventSource
                 try {
                     // This must be called prior to closeWindow to ensure that the correct state is set
                     // to prevent chunk rads from triggering additional open/close events.
-                    context.stopSnapshot();
+                    context.requestSnapshotStop(null);
 
                     // Clear the state
                     window.clear();

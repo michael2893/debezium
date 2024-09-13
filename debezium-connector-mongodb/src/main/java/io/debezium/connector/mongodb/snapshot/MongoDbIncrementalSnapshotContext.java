@@ -257,12 +257,6 @@ public class MongoDbIncrementalSnapshotContext<T> implements IncrementalSnapshot
     }
 
     @Override
-    public void stopSnapshot() {
-        this.dataCollectionsToSnapshot.clear();
-        this.correlationId = null;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public boolean removeDataCollectionFromSnapshot(String dataCollectionId) {
         final T collectionId = (T) CollectionId.parse(dataCollectionId);
@@ -282,6 +276,21 @@ public class MongoDbIncrementalSnapshotContext<T> implements IncrementalSnapshot
     @Override
     public String getCorrelationId() {
         return this.correlationId;
+    }
+
+    @Override
+    public void stopAllSnapshots() {
+
+    }
+
+    @Override
+    public List<String> getDataCollectionsToStop() {
+        return List.of();
+    }
+
+    @Override
+    public void resetStopFlag() {
+
     }
 
     protected static <U> IncrementalSnapshotContext<U> init(MongoDbIncrementalSnapshotContext<U> context, Map<String, ?> offsets) {
@@ -380,6 +389,11 @@ public class MongoDbIncrementalSnapshotContext<T> implements IncrementalSnapshot
     public void setSchemaVerificationPassed(boolean schemaVerificationPassed) {
         this.schemaVerificationPassed = schemaVerificationPassed;
         LOGGER.info("Incremental snapshot's schema verification passed = {}, schema = {}", schemaVerificationPassed, schema);
+    }
+
+    @Override
+    public void requestSnapshotStop(List<String> dataCollectionIds) {
+
     }
 
     public static <U> MongoDbIncrementalSnapshotContext<U> load(Map<String, ?> offsets, boolean useCatalogBeforeSchema) {
