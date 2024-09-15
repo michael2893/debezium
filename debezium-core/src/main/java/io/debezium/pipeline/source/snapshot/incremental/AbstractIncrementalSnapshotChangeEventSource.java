@@ -483,7 +483,11 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
             notificationService.incrementalSnapshotNotificationService().notifyAborted(context, partition, offsetContext);
             return;
         }
-        final List<String> expandedDataCollectionIds = expandAndDedupeDataCollectionIds(context.getDataCollectionsToStop());
+        List<String> dataCollectionsToStop = context.getDataCollectionsToStop();
+        if (dataCollectionsToStop.isEmpty()) {
+            return;
+        }
+        final List<String> expandedDataCollectionIds = expandAndDedupeDataCollectionIds(dataCollectionsToStop);
         LOGGER.info("Removing '{}' collections from incremental snapshot", expandedDataCollectionIds);
         // Iterate and remove any collections that are not current.
         // If current is marked for removal, delay that until after others have been removed.
