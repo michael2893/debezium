@@ -183,7 +183,7 @@ public abstract class BinlogSnapshotChangeEventSource<P extends BinlogPartition,
                 metrics.setGlobalLockAcquired();
             }
             catch (SQLException e) {
-                LOGGER.info("Unable to flush and acquire global read lock, will use table read locks after reading table names");
+                LOGGER.info("Unable to flush and acquire global read lock, will use table read locks after reading table names", e);
                 // Continue anyway, since RDS (among others) don't allow setting a global lock
                 assert !isGloballyLocked();
             }
