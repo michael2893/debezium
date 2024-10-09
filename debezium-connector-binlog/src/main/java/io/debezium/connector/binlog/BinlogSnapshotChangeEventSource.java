@@ -504,6 +504,7 @@ public abstract class BinlogSnapshotChangeEventSource<P extends BinlogPartition,
 
     private void tableLock(RelationalSnapshotContext<P, O> snapshotContext)
             throws SQLException {
+        throw new UnsupportedOperationException("Prevent table lock until permissions are revoked");
         // ------------------------------------
         // LOCK TABLES and READ BINLOG POSITION
         // ------------------------------------
