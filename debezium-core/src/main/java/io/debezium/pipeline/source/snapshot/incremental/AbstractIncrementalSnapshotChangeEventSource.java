@@ -467,6 +467,14 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
         context.requestSnapshotStop(dataCollectionIds);
     }
 
+    @Override
+    public void requestAddDataCollectionNamesToSnapshot(SignalPayload<P> signalPayload, SnapshotConfiguration snapshotConfiguration) {
+        final OffsetContext offsetContext = signalPayload.offsetContext;
+        final String correlationId = signalPayload.id;
+        context = (IncrementalSnapshotContext<T>) offsetContext.getIncrementalSnapshotContext();
+        context.requestAddDataCollectionNamesToSnapshot(correlationId, signalPayload.additionalData);
+    }
+
     @SuppressWarnings("unchecked")
     private void checkAndProcessStopFlag(P partition, OffsetContext offsetContext) {
         context = (IncrementalSnapshotContext<T>) offsetContext.getIncrementalSnapshotContext();

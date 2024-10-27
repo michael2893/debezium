@@ -77,4 +77,5 @@ public interface IncrementalSnapshotContext<T> {
 
     List<String> getDataCollectionsToStop();
 
+    void requestAddDataCollectionNamesToSnapshot(String correlationId, Map<String, Object> additionalData);
 }

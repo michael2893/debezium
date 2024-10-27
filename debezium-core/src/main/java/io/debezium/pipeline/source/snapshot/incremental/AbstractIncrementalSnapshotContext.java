@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -97,6 +98,7 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
      */
     private final AtomicBoolean paused = new AtomicBoolean(false);
     private final LinkedBlockingQueue<String> dataCollectionsToStop = new LinkedBlockingQueue<>();
+    private final ConcurrentHashMap<String, Map<String, Object>> dataCollectionsToAdd = new ConcurrentHashMap<>();
 
     public AbstractIncrementalSnapshotContext(boolean useCatalogBeforeSchema) {
         this.useCatalogBeforeSchema = useCatalogBeforeSchema;
@@ -178,6 +180,11 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
         List<String> drainedList = new ArrayList<>();
         dataCollectionsToStop.drainTo(drainedList);
         return drainedList;
+    }
+
+    @Override
+    public void requestAddDataCollectionNamesToSnapshot(String correlationId, Map<String, Object> additionalData) {
+        dataCollectionsToAdd.put(correlationId, additionalData);
     }
 
     public boolean snapshotRunning() {
