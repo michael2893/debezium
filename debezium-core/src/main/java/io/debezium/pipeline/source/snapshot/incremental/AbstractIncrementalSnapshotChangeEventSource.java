@@ -131,7 +131,6 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
             context.resumeSnapshot();
             progressListener.snapshotResumed(partition);
             notificationService.incrementalSnapshotNotificationService().notifyResumed(context, partition, offsetContext);
-            readChunk(partition, offsetContext);
         }
     }
 
