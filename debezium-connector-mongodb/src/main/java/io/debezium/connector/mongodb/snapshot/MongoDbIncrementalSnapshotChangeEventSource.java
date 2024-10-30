@@ -436,6 +436,11 @@ public class MongoDbIncrementalSnapshotChangeEventSource
         context.requestSnapshotStop(dataCollectionPatterns);
     }
 
+    @Override
+    public void requestAddDataCollectionNamesToSnapshot(SignalPayload<MongoDbPartition> signalPayload, SnapshotConfiguration snapshotConfiguration) {
+
+    }
+
     @SuppressWarnings("unchecked")
     private void checkAndProcessStopFlag(MongoDbPartition partition, OffsetContext offsetContext) {
         context = (IncrementalSnapshotContext<CollectionId>) offsetContext.getIncrementalSnapshotContext();

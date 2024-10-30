@@ -160,7 +160,7 @@ public abstract class BinlogReadOnlyIncrementalSnapshotChangeEventSource<P exten
         while (getContext().snapshotRunning() && getContext().reachedHighWatermark(currentGtid)) {
             getContext().closeWindow();
             sendWindowEvents(partition, offsetContext);
-            readChunk(partition, offsetContext);
+            readChunk(partition, offsetContext); //
             if (currentGtid == null && getContext().watermarksChanged()) {
                 return;
             }

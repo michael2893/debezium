@@ -34,7 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.debezium.DebeziumException;
 import io.debezium.annotation.NotThreadSafe;
+import io.debezium.pipeline.signal.SignalPayload;
 import io.debezium.pipeline.signal.actions.snapshotting.AdditionalCondition;
+import io.debezium.pipeline.signal.actions.snapshotting.SnapshotConfiguration;
 import io.debezium.relational.Table;
 import io.debezium.relational.TableId;
 import io.debezium.util.HexConverter;
@@ -98,7 +100,7 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
      */
     private final AtomicBoolean paused = new AtomicBoolean(false);
     private final LinkedBlockingQueue<String> dataCollectionsToStop = new LinkedBlockingQueue<>();
-    private final ConcurrentHashMap<String, Map<String, Object>> dataCollectionsToAdd = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<SignalPayload, SnapshotConfiguration> dataCollectionsToAdd = new ConcurrentHashMap<>();
 
     public AbstractIncrementalSnapshotContext(boolean useCatalogBeforeSchema) {
         this.useCatalogBeforeSchema = useCatalogBeforeSchema;
@@ -183,8 +185,8 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
     }
 
     @Override
-    public void requestAddDataCollectionNamesToSnapshot(String correlationId, Map<String, Object> additionalData) {
-        dataCollectionsToAdd.put(correlationId, additionalData);
+    public void requestAddDataCollectionNamesToSnapshot(SignalPayload signalPayload, SnapshotConfiguration snapshotConfiguration) {
+        dataCollectionsToAdd.put(signalPayload, snapshotConfiguration);
     }
 
     public boolean snapshotRunning() {
@@ -271,6 +273,10 @@ public class AbstractIncrementalSnapshotContext<T> implements IncrementalSnapsho
     @Override
     public String getCorrelationId() {
         return this.correlationId;
+    }
+
+    public Map<SignalPayload, SnapshotConfiguration> getDataCollectionsToAdd() {
+        return dataCollectionsToAdd;
     }
 
     protected static <U> IncrementalSnapshotContext<U> init(AbstractIncrementalSnapshotContext<U> context, Map<String, ?> offsets) {

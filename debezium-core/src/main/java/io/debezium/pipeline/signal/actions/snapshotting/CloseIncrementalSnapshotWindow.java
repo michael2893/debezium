@@ -25,7 +25,7 @@ public class CloseIncrementalSnapshotWindow<P extends Partition> implements Sign
     @Override
     public boolean arrived(SignalPayload<P> signalPayload) throws InterruptedException {
         dispatcher.getIncrementalSnapshotChangeEventSource().closeWindow(signalPayload.partition, signalPayload.id,
-                signalPayload.offsetContext);
+                signalPayload.offsetContext); //
         return true;
     }
 

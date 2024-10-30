@@ -124,7 +124,7 @@ public class PostgresReadOnlyIncrementalSnapshotChangeEventSource<P extends Post
         LOGGER.debug("Checking window for table '{}', key '{}', window contains '{}'", dataCollectionId, key, window);
         getContext().updateWindowState(offsetContext);
 
-        boolean windowClosed = getContext().isWindowClosed();
+        boolean windowClosed = getContext().isWindowClosed(); // TODO
         if (windowClosed) {
             sendWindowEvents(partition, offsetContext);
             readChunk(partition, offsetContext);

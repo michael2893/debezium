@@ -38,7 +38,7 @@ public class MariaDbReadOnlyIncrementalSnapshotContext<T> extends BinlogReadOnly
     }
 
     @Override
-    public boolean updateWindowState(OffsetContext offsetContext) {
+    public boolean updateWindowState(OffsetContext offsetContext) { //
         String currentGtid = getCurrentGtid(offsetContext);
         if (!windowOpened && lowWatermark != null) {
             boolean pastLowWatermark = !lowWatermark.contains(currentGtid);
