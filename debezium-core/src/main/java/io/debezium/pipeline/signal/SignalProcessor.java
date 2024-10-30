@@ -129,14 +129,14 @@ public class SignalProcessor<P extends Partition, O extends OffsetContext> {
 
     public void registerSignalAction(String id, SignalAction<P> signal) {
 
-        LOGGER.debug("Registering signal '{}' using class '{}'", id, signal.getClass().getName());
+        LOGGER.info("Registering signal '{}' using class '{}'", id, signal.getClass().getName());
         signalActions.put(id, signal);
     }
 
     public void process() {
 
         executeWithSemaphore(() -> {
-            LOGGER.trace("SignalProcessor processing");
+            LOGGER.info("SignalProcessor processing");
             enabledChannelReaders.stream()
                     .map(SignalChannelReader::read)
                     .flatMap(Collection::stream)
@@ -177,8 +177,8 @@ public class SignalProcessor<P extends Partition, O extends OffsetContext> {
 
     private void processSignal(SignalRecord signalRecord) {
 
-        LOGGER.debug("Signal Processor offset context {}", previousOffsets.getOffsets());
-        LOGGER.debug("Received signal id = '{}', type = '{}', data = '{}'", signalRecord.getId(), signalRecord.getType(), signalRecord.getData());
+        LOGGER.info("Signal Processor offset context {}", previousOffsets.getOffsets());
+        LOGGER.info("Received signal id = '{}', type = '{}', data = '{}'", signalRecord.getId(), signalRecord.getType(), signalRecord.getData());
         final SignalAction<P> action = signalActions.get(signalRecord.getType());
         if (action == null) {
             LOGGER.warn("Signal '{}' has been received but the type '{}' is not recognized", signalRecord.getId(), signalRecord.getType());
