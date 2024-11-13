@@ -112,7 +112,7 @@ public class MySqlReadOnlyIncrementalSnapshotContext<T> extends BinlogReadOnlyIn
     }
 
     private boolean serverUuidChanged() {
-        return highWatermark.getUUIDSets().size() > 1;
+        return highWatermark != null && highWatermark.getUUIDSets().size() > 1;
     }
 
     public static <U> MySqlReadOnlyIncrementalSnapshotContext<U> load(Map<String, ?> offsets) {

@@ -141,8 +141,8 @@ public abstract class BinlogReadOnlyIncrementalSnapshotChangeEventSource<P exten
     public void addDataCollectionNamesToSnapshot(SignalPayload<P> signalPayload, SnapshotConfiguration snapshotConfiguration)
             throws InterruptedException {
         final Map<String, Object> additionalData = signalPayload.additionalData;
-        super.addDataCollectionNamesToSnapshot(signalPayload, snapshotConfiguration);
         getContext().setSignalOffset((Long) additionalData.get(KafkaSignalChannel.CHANNEL_OFFSET));
+        super.addDataCollectionNamesToSnapshot(signalPayload, snapshotConfiguration);
     }
 
     @Override

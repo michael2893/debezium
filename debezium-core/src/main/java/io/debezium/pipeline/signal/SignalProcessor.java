@@ -177,7 +177,7 @@ public class SignalProcessor<P extends Partition, O extends OffsetContext> {
 
     private void processSignal(SignalRecord signalRecord) {
 
-        LOGGER.debug("Signal Processor offset context {}", previousOffsets.getOffsets());
+        LOGGER.info("Signal Processor offset context {}", previousOffsets.getOffsets());
         LOGGER.debug("Received signal id = '{}', type = '{}', data = '{}'", signalRecord.getId(), signalRecord.getType(), signalRecord.getData());
         final SignalAction<P> action = signalActions.get(signalRecord.getType());
         if (action == null) {
