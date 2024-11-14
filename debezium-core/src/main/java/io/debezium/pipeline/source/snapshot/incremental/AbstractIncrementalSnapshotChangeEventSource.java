@@ -434,8 +434,8 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
         boolean shouldReadChunk = !context.snapshotRunning();
 
         List<String> expandedDataCollectionIds = expandAndDedupeDataCollectionIds(snapshotConfiguration.getDataCollections());
-        LOGGER.trace("Configured data collections {}", snapshotConfiguration.getDataCollections());
-        LOGGER.trace("Expanded data collections {}", expandedDataCollectionIds);
+        LOGGER.info("Configured data collections {}", snapshotConfiguration.getDataCollections());
+        LOGGER.info("Expanded data collections {}", expandedDataCollectionIds);
         if (expandedDataCollectionIds.size() > snapshotConfiguration.getDataCollections().size()) {
             LOGGER.info("Data-collections to snapshot have been expanded from {} to {}", snapshotConfiguration.getDataCollections(), expandedDataCollectionIds);
         }
@@ -468,6 +468,7 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
     @Override
     public void requestAddDataCollectionNamesToSnapshot(SignalPayload<P> signalPayload, SnapshotConfiguration snapshotConfiguration) {
         final OffsetContext offsetContext = signalPayload.offsetContext;
+        LOGGER.info("Request data collections {}", signalPayload);
         context = (IncrementalSnapshotContext<T>) offsetContext.getIncrementalSnapshotContext();
         context.requestAddDataCollectionNamesToSnapshot(signalPayload, snapshotConfiguration);
     }
@@ -493,6 +494,7 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
     }
 
     private void checkAndAddDataCollections(P partition, OffsetContext offsetContext) throws InterruptedException {
+        LOGGER.info("Check and add data collections {}", context.getDataCollectionsToAdd().keySet());
         Map<SignalPayload, SnapshotConfiguration> map = context.getDataCollectionsToAdd();
         Iterator<Map.Entry<SignalPayload, SnapshotConfiguration>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
