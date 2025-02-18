@@ -468,7 +468,7 @@ public class MongoDbIncrementalSnapshotChangeEventSource
             LOGGER.warn("Context is null, skipping check and add data collections");
             return;
         }
-        LOGGER.info("Check and add data collections {}", context.getDataCollectionsToAdd().keySet());
+        LOGGER.debug("Check and add data collections {}", context.getDataCollectionsToAdd().keySet());
         Map<SignalPayload, SnapshotConfiguration> map = context.getDataCollectionsToAdd();
         Iterator<Map.Entry<SignalPayload, SnapshotConfiguration>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
