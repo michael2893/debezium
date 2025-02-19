@@ -320,16 +320,22 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
             return records;
         }
         catch (RetriableException e) {
-            stop(true);
+            LOGGER.info("------ Get retriable exception during poll, restarting the connector", e);
+            if(coordinator != null && coordinator.getErrorHandler().hasMoreRetries()) {
+                stop(true);
+            }
             throw e;
         }
     }
 
     protected void logStatistics(final List<SourceRecord> records) {
         if (records == null || !LOGGER.isInfoEnabled()) {
+            LOGGER.info("----- Records is null or no records to process");
             return;
         }
         int batchSize = records.size();
+
+        LOGGER.info("----- Batch size is {}", batchSize);
 
         if (batchSize > 0) {
             // We want to log the number of records per topic...
@@ -372,6 +378,7 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
         // allows resetting that counter when a successful poll iteration step contains new records so that when a
         // future failure is thrown, the maximum retry count can be utilized.
         if (!records.isEmpty() && coordinator != null && coordinator.getErrorHandler().getRetries() > 0) {
+            LOGGER.info("------ Resetting error handler retries after successful poll iteration");
             coordinator.getErrorHandler().resetRetries();
         }
     }
