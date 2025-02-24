@@ -313,6 +313,13 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
             }
 
             final List<SourceRecord> records = doPoll();
+            if (records == null) {
+                LOGGER.info("----- Records is null or no records to process");
+            } else {
+                LOGGER.info("------ Poll returned records size is {}", records.size());
+
+                records.stream().forEach(record -> LOGGER.info("------ Content of the records {}", record.toString()));
+            }
             logStatistics(records);
 
             resetErrorHandlerRetriesIfNeeded(records);
@@ -321,9 +328,7 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
         }
         catch (RetriableException e) {
             LOGGER.info("------ Get retriable exception during poll, restarting the connector", e);
-            if(coordinator != null && coordinator.getErrorHandler().hasMoreRetries()) {
-                stop(true);
-            }
+            stop(true);
             throw e;
         }
     }
