@@ -44,7 +44,7 @@ public class ErrorHandler {
             this.maxRetries = RETRIES_UNLIMITED;
         }
         if (replacedErrorHandler != null) {
-            LOGGER.info("----- Setting retries to {} from replaced error handler", replacedErrorHandler.getRetries());
+            LOGGER.info("Setting retries to {} from replaced error handler", replacedErrorHandler.getRetries());
             this.retries = replacedErrorHandler.getRetries();
         }
     }

@@ -314,11 +314,10 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
 
             final List<SourceRecord> records = doPoll();
             if (records == null) {
-                LOGGER.info("AHMED Records is null or no records to process");
+                LOGGER.info("Records is null or no records to process");
             } else {
-                LOGGER.info("AHMED Poll returned records size is {}", records.size());
-
-                records.stream().forEach(record -> LOGGER.info("AHMED Content of the records {}", record.toString()));
+                LOGGER.info("Poll returned records size is {}", records.size());
+                records.stream().forEach(record -> LOGGER.info("Content of the records {}", record.toString()));
             }
             logStatistics(records);
 
@@ -327,7 +326,7 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
             return records;
         }
         catch (RetriableException e) {
-            LOGGER.info("AHMED Get retriable exception during poll, restarting the connector", e);
+            LOGGER.info("Got retriable exception during poll, restarting the connector", e.getMessage());
             stop(true);
             throw e;
         }
@@ -335,12 +334,9 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
 
     protected void logStatistics(final List<SourceRecord> records) {
         if (records == null || !LOGGER.isInfoEnabled()) {
-            LOGGER.info("AHMED Records is null or no records to process");
             return;
         }
         int batchSize = records.size();
-
-        LOGGER.info("AHMED Batch size is {}", batchSize);
 
         if (batchSize > 0) {
             // We want to log the number of records per topic...
@@ -383,7 +379,7 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
         // allows resetting that counter when a successful poll iteration step contains new records so that when a
         // future failure is thrown, the maximum retry count can be utilized.
         if (!records.isEmpty() && coordinator != null && coordinator.getErrorHandler().getRetries() > 0) {
-            LOGGER.info("AHMED Resetting error handler retries after successful poll iteration");
+            LOGGER.info("Resetting error handler retries after successful poll iteration");
             coordinator.getErrorHandler().resetRetries();
         }
     }
