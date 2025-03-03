@@ -36,6 +36,7 @@ import io.debezium.annotation.VisibleForTesting;
 import io.debezium.config.CommonConnectorConfig;
 import io.debezium.config.Configuration;
 import io.debezium.config.Field;
+import io.debezium.data.Envelope;
 import io.debezium.function.LogPositionValidator;
 import io.debezium.pipeline.ChangeEventSourceCoordinator;
 import io.debezium.pipeline.notification.channels.NotificationChannel;
@@ -389,9 +390,15 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
             return false;
         }
 
-        records.forEach(record -> LOGGER.info("Content of the records {}", record.toString()));
+        for (SourceRecord record : records) {
+            if (record.valueSchema().field(Envelope.FieldName.AFTER) != null) {
+                LOGGER.info("Contains messages: " + record.valueSchema());
+                return true;
+            }
+            LOGGER.info("Not binlog message: " + record.valueSchema());
+        }
 
-        return true;
+        return false;
     }
 
     /**
