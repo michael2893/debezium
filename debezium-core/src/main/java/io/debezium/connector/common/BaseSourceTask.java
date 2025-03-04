@@ -391,11 +391,9 @@ public abstract class BaseSourceTask<P extends Partition, O extends OffsetContex
         }
 
         for (SourceRecord record : records) {
-            if (record.valueSchema().field(Envelope.FieldName.AFTER) != null) {
-                LOGGER.info("Contains messages: " + record.valueSchema());
+            if (record.valueSchema() != null && record.valueSchema().field(Envelope.FieldName.AFTER) != null) {
                 return true;
             }
-            LOGGER.info("Not binlog message: " + record.valueSchema());
         }
 
         return false;
