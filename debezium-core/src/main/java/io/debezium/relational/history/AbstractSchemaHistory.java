@@ -131,8 +131,8 @@ public abstract class AbstractSchemaHistory implements SchemaHistory {
                         ddlParser.setCurrentSchema(recovered.schemaName()); // may be null
                     }
                     if (ddlFilter.test(ddl)) {
-                        logger.info("a DDL '{}' was filtered out of processing by regular expression '{}'", ddl,
-                                config.getString(DDL_FILTER));
+                        // logger.info("a DDL '{}' was filtered out of processing by regular expression '{}'", ddl,
+                        //         config.getString(DDL_FILTER));
                         return;
                     }
                     try {
