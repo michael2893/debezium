@@ -501,8 +501,12 @@ public abstract class BinlogSnapshotChangeEventSource<P extends BinlogPartition,
     }
 
     private void globalUnlock() throws SQLException {
-        LOGGER.info("Releasing global read lock to enable MySQL writes");
-        connection.executeWithoutCommitting("UNLOCK TABLES");
+        LOGGER.info("Releasing global read lock to enable MySQL writes. Held for {}", clock.currentTimeInMillis() - globalLockAcquiredAt);
+        try {
+            connection.executeWithoutCommitting("UNLOCK TABLES");
+        } catch (Exception e) {
+            LOGGER.warn("Failed to unlock tables. Skipping unlock", e);
+        }
         long lockReleased = clock.currentTimeInMillis();
         metrics.setGlobalLockReleased();
         LOGGER.info("Writes to MySQL tables prevented for a total of {}", Strings.duration(lockReleased - globalLockAcquiredAt));
