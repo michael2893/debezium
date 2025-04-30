@@ -899,7 +899,7 @@ public class JdbcConnection implements AutoCloseable {
     }
 
     public synchronized Connection connection(boolean executeOnConnect) throws SQLException {
-        if (!isConnected()) {
+        if (!isValid()) {
 
             establishConnection();
 
