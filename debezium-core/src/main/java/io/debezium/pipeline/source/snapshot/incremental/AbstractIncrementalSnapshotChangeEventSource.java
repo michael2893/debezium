@@ -623,6 +623,7 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
         LOGGER.debug("Exporting data chunk from table '{}' (total {} tables)", currentTable.id(), context.dataCollectionsToBeSnapshottedCount());
 
         final String selectStatement = chunkQueryBuilder.buildChunkQuery(context, currentTable, context.currentDataCollectionId().getAdditionalCondition());
+        LOGGER.info("Executing select statement '{}'", selectStatement);
         Loggings.logDebugAndTraceRecord(LOGGER, context.maximumKey().get(), "\t For table '{}' using select statement: '{}', key: '{}'",
                 currentTable.id(), selectStatement, context.chunkEndPosititon());
 
