@@ -815,8 +815,8 @@ public abstract class RelationalSnapshotChangeEventSource<P extends Partition, O
         return jdbcConnection.readTableStatement(connectorConfig, tableSize);
     }
 
-    private void rollbackTransaction(Connection connection) {
-        if (connection != null) {
+    private void rollbackTransaction(Connection connection) throws SQLException {
+        if (connection != null && connection.isValid(JdbcConnection.CONNECTION_VALID_CHECK_TIMEOUT_IN_SEC)) {
             try {
                 connection.rollback();
             }

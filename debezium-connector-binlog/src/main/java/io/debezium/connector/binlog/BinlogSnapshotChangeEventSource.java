@@ -502,7 +502,9 @@ public abstract class BinlogSnapshotChangeEventSource<P extends BinlogPartition,
 
     private void globalUnlock() throws SQLException {
         LOGGER.info("Releasing global read lock to enable MySQL writes");
-        connection.executeWithoutCommitting("UNLOCK TABLES");
+        if (connection.connection().isValid(JdbcConnection.CONNECTION_VALID_CHECK_TIMEOUT_IN_SEC)) {
+            connection.executeWithoutCommitting("UNLOCK TABLES");
+        }
         long lockReleased = clock.currentTimeInMillis();
         metrics.setGlobalLockReleased();
         LOGGER.info("Writes to MySQL tables prevented for a total of {}", Strings.duration(lockReleased - globalLockAcquiredAt));
