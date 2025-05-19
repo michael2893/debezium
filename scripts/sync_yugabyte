@@ -1,0 +1,114 @@
+#!/bin/bash
+set -euox pipefail
+
+########################################################################################################################
+# Usage: script/sync_yugabyte
+# Example: script/sync_yugabyte
+#
+# This script sync's the yugabyte-main branch with yugabyte/debezium's main branch, and rebases the shopify/debezium yugabyte
+# branch on yugabyte-main.
+#
+########################################################################################################################
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+REMOTE_NAME="yugabyte"
+REMOTE_URL="https://github.com/yugabyte/debezium"
+OUR_YUGABYTE_BRANCH="yugabyte"
+PRISTINE_YUGABYTE_BRANCH="yugabyte-main"
+REMOTE_BRANCH_ARGUMENT=$1
+YUGABYTE_TAG_ARGUMENT=$2
+
+error() {
+  echo -e "💩! ${1}\n" 1>&2 && exit 1
+}
+
+verify_tag_argument_present() {
+  if [[ -z "$YUGABYTE_TAG_ARGUMENT" || -z "$REMOTE_BRANCH_ARGUMENT" ]]; then
+    echo "Error: This script requires exactly two arguments: upstream branch name and desired tag"
+    echo "Usage: $0 <upstream_yugabyte_branch> <upstream_yugabyte_connector_tag>"
+    exit 1
+  fi
+}
+
+is_on_yugabyte() {
+  [ "${BRANCH}" == "heads/${OUR_YUGABYTE_BRANCH}" ]
+}
+
+is_git_clean() {
+  # untracked files are cool, but nothing in the index waiting to be committed or changed is allowed
+  git diff --exit-code && git diff --quiet --cached HEAD
+}
+
+sync_upstream() {
+  git checkout $PRISTINE_YUGABYTE_BRANCH
+
+  # Check if the remote already exists
+  if git remote get-url $REMOTE_NAME &>/dev/null; then
+    echo "Remote '$REMOTE_NAME' already exists."
+  else
+    # Add the remote if it doesn't exist
+    git remote add $REMOTE_NAME $REMOTE_URL
+    echo "Remote '$REMOTE_NAME' added with URL '$REMOTE_URL'."
+  fi
+
+  git pull $REMOTE_NAME $REMOTE_BRANCH_ARGUMENT
+  git push origin $PRISTINE_YUGABYTE_BRANCH
+
+  git checkout $OUR_YUGABYTE_BRANCH
+  git pull origin $OUR_YUGABYTE_BRANCH
+  # If you get an issue here, you likely need to go in and clean up the .github/workflows/ folder because of this issue
+  # https://github.com/Shopify/debezium/pull/245
+  if ! git rebase $REMOTE_NAME/$REMOTE_BRANCH_ARGUMENT; then
+    echo "Rebase encountered conflicts. Resolving..."
+
+    # Resolve conflicts in .github/ directory
+    git checkout --ours .github/
+    git add .github/
+    
+    # Continue the rebase
+    git rebase --continue || {
+      echo "Rebase failed after resolving conflicts. Please resolve manually."
+      exit 1
+    }
+  fi
+  git push --force-with-lease origin $OUR_YUGABYTE_BRANCH
+  git fetch $REMOTE_NAME --tags
+  # Create a Shopify specific branch for this tag
+  if git show-ref --verify --quiet "refs/heads/shopify-yugabyte-$YUGABYTE_TAG_ARGUMENT"; then
+    git branch -D shopify-yugabyte-$YUGABYTE_TAG_ARGUMENT
+  fi
+  if git show-ref --verify --quiet "refs/tags/shopify-yugabyte-$YUGABYTE_TAG_ARGUMENT"; then
+    git tag -d shopify-yugabyte-$YUGABYTE_TAG_ARGUMENT
+  fi
+  git checkout -b shopify-yugabyte-$YUGABYTE_TAG_ARGUMENT $YUGABYTE_TAG_ARGUMENT
+  # Apply the Shopify handshake YugabyteDB commit
+  if ! git cherry-pick $(git log --oneline $OUR_YUGABYTE_BRANCH | grep "Shopify handshake YugabyteDB" | cut -d' ' -f1); then
+    echo "Cherry-pick encountered conflicts. Resolving..."
+
+    # As part of https://github.com/Shopify/debezium/pull/245 we need to remove GitHub Actions, this causes a conflict
+    # this is the reason that we use diff-filter=U and filter on the github folder. If there are other conflicts, we will
+    # need to resolve them manually.
+    conflicted_github_files=$(git diff --name-only --diff-filter=U -- .github/)
+    for file in $conflicted_github_files; do
+      git add $file
+    done
+
+    git cherry-pick --continue --no-edit
+  fi
+  git tag shopify-yugabyte-$YUGABYTE_TAG_ARGUMENT HEAD
+  git push --force origin --tags
+  git checkout $OUR_YUGABYTE_BRANCH
+}
+
+main() {
+  # can only sync from the main branch with a clean git index (nothing outstanding)
+  if ! is_on_yugabyte;
+    then error "Releases must be started from $OUR_YUGABYTE_BRANCH.";
+  fi
+  if ! is_git_clean; then error "You need to commit or stash your changes to release"; fi
+
+  verify_tag_argument_present
+  sync_upstream
+}
+
+main "$@"
