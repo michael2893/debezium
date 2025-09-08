@@ -1,7 +1,7 @@
 ---
 containers:
   default:
-    docker: us-docker.pkg.dev/shopify-docker-images/containers/cloud/maven-gradle-sbt-jdk
+    docker: us-docker.pkg.dev/shopify-docker-images/containers/cloud/maven-gradle-sbt-jdk@sha256:cb3a7e87993d1865d6169142b0fb6033445ea7bfea80aaebb401408e28cf43b4
 
 steps:
   - label: "Test Debezium MySQL Connector"

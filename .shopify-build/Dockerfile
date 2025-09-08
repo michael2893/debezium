@@ -1,5 +1,5 @@
 # This Dockerfile is used by cdc-core to build the Debezium Image for the Shopify CDC in that buildkite pipeline
-FROM us-docker.pkg.dev/shopify-docker-images/containers/cloud/maven-gradle-sbt-jdk
+FROM us-docker.pkg.dev/shopify-docker-images/containers/cloud/maven-gradle-sbt-jdk@sha256:cb3a7e87993d1865d6169142b0fb6033445ea7bfea80aaebb401408e28cf43b4
 
 USER root
 
