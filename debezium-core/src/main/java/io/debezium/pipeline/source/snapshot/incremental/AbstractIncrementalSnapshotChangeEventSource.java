@@ -360,22 +360,29 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
     private boolean isTableInvalid(P partition, OffsetContext offsetContext) {
         final TableId currentTableId = (TableId) context.currentDataCollectionId().getId();
         currentTable = databaseSchema.tableFor(currentTableId);
-        if (currentTable == null) {
-            LOGGER.info("Schema not found for table '{}', known tables {}. Will attempt to retrieve this schema",
-                    currentTableId, databaseSchema.tableIds());
-            try {
-                retrieveAndRefreshSchema(currentTableId, partition, offsetContext);
-                currentTable = databaseSchema.tableFor(currentTableId);
-                if (currentTable == null) {
-                    warnAndSkip(currentTableId, partition, offsetContext, UNKNOWN_SCHEMA, "Schema retrieval failed to populate the schema as expected for {}");
-                    return true;
+        TableSchema currentTableSchema = databaseSchema.schemaFor(currentTableId);
+        // If the table is not filtered out but the schema is unknown, we need to retrieve it
+        if (currentTable != null) {
+            if (currentTableSchema == null) {
+                LOGGER.info("Schema not found for table '{}', known tables {}. Will attempt to retrieve this schema",
+                        currentTableId, databaseSchema.tableIds());
+                try {
+                    retrieveAndRefreshSchema(currentTableId, partition, offsetContext);
+                    currentTable = databaseSchema.tableFor(currentTableId);
+                    if (currentTable == null) {
+                        warnAndSkip(currentTableId, partition, offsetContext, UNKNOWN_SCHEMA, "Schema retrieval failed to populate the schema as expected for {}");
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    LOGGER.warn("Failed to retrieve schema for {}", currentTableId, e);
+                   warnAndSkip(currentTableId, partition, offsetContext, UNKNOWN_SCHEMA, "Schema retrieval failed due to an exception for {}");
+                   return true;
                 }
             }
-            catch (Exception e) {
-                LOGGER.warn("Failed to retrieve schema for {}", currentTableId, e);
-                warnAndSkip(currentTableId, partition, offsetContext, UNKNOWN_SCHEMA, "Schema retrieval failed due to an exception for {}");
-                return true;
-            }
+        } else {
+            warnAndSkip(currentTableId, partition, offsetContext, UNKNOWN_SCHEMA, "Table is filtered out");
+            return true;
         }
         if (chunkQueryBuilder.getQueryColumns(context, currentTable).isEmpty()) {
             warnAndSkip(currentTableId, partition, offsetContext, NO_PRIMARY_KEY, "Incremental snapshot for table '{}' skipped because the table has no primary keys");
