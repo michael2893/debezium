@@ -346,8 +346,20 @@ public abstract class AbstractIncrementalSnapshotChangeEventSource<P extends Par
             emitWindowClose(partition, offsetContext);
             LOGGER.trace("Window close emitted");
         }
+        catch (SQLException e) {
+            warnAndSkip((TableId) context.currentDataCollectionId().getId(), partition, offsetContext,
+                    SQL_EXCEPTION,
+                    "SQL error while executing incremental snapshot for table '{}', skipping and continuing streaming");
+        }
         catch (Exception e) {
-            throw new DebeziumException(String.format("Database error while executing incremental snapshot for table '%s'", context.currentDataCollectionId()), e);
+            if (e.getCause() instanceof SQLException) {
+                warnAndSkip((TableId) context.currentDataCollectionId().getId(), partition, offsetContext,
+                        SQL_EXCEPTION,
+                        "SQL error while executing incremental snapshot for table '{}', skipping and continuing streaming");
+            }
+            else {
+                throw new DebeziumException(String.format("Database error while executing incremental snapshot for table '%s'", context.currentDataCollectionId()), e);
+            }
         }
         finally {
             postReadChunk(context);
