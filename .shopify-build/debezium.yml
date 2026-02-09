@@ -1,38 +1,18 @@
 ---
 containers:
-  v2.3.1.Final:
-    application: dbz-v2.3.1.final
-    dockerfile:
-      build_args:
-        DEBEZIUM_VERSION: "v2.3.1.Final"
-        IS_LATEST: "false"
-        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
-  v2.4.0.Final:
-    application: dbz-v2.4.0.final
-    dockerfile:
-      build_args:
-        DEBEZIUM_VERSION: "v2.4.0.Final"
-        IS_LATEST: "false"
-        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
-  latest:
-    application: debezium
-    dockerfile:
-      build_args:
-        DEBEZIUM_VERSION: "2.5.0-SNAPSHOT"
-        IS_LATEST: "true"
-        BUILD_CONNECTOR_MYSQL: "/app/script/build_connector_mysql"
-  latest-test:
-    application: debezium-test
-    dockerfile:
-      build_args:
-        DEBEZIUM_VERSION: "2.5.0-SNAPSHOT"
-        IS_LATEST: "true"
-        BUILD_CONNECTOR_MYSQL: "/app/script/test_connector_mysql"
-
-
+  default:
+    docker: us-docker.pkg.dev/shopify-docker-images/containers/cloud/maven-gradle-sbt-jdk
 
 steps:
-  - build: latest
-  - build: latest-test
-  - build: v2.3.1.Final
-  - build: v2.4.0.Final
+  - label: "Test Debezium MySQL Connector"
+    run:
+      - mvn clean install -Dquick && mvn -pl debezium-connector-mysql test
+    timeout: 30m
+  - label: "Test Debezium Core"
+    run:
+      - mvn clean install -Dquick && mvn -pl debezium-core test
+    timeout: 30m
+  - label: "Test Debezium API"
+    run:
+      - mvn clean install -Dquick && mvn -pl debezium-api test
+    timeout: 30m
